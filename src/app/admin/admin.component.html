@@ -1,0 +1,30 @@
+<div class="container">
+    
+    <div class="card">
+        <p-table [value]="adminMembers" [(selection)]="selectedAdmins" dataKey="code"
+            [tableStyle]="{'min-width': '50rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 4rem">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-admin>
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="admin"></p-tableCheckbox>
+                    </td>
+                    <td>{{admin.name}}</td>
+                    <td>{{admin.email}}</td>
+                    <td>{{admin.role}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+</div>
