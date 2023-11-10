@@ -1,30 +1,74 @@
 <div class="container">
-    
+
     <div class="card">
-        <p-table [value]="adminMembers" [(selection)]="selectedAdmins" dataKey="code"
-            [tableStyle]="{'min-width': '50rem'}">
+        <p-table #myTab [value]="adminMembers" [(selection)]="selectedAdmins" dataKey="id"
+            [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rows]="10" [selectionPageOnly]="true"
+            [globalFilterFields]="['name', 'email', 'role']">
+            <ng-template pTemplate="caption">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="myTab.filterGlobal($any($event.target).value, 'contains')"
+                        placeholder="Search by name, email or role.." />
+                </span>
+            </ng-template>
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 4rem">
                         <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                     </th>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Actions</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-admin>
-                <tr>
+
+            <ng-template pTemplate="body" let-adminmember let-rowIndex="rowIndex">
+                <tr [pEditableRow]="adminmember" [pSelectableRow]="adminmember" [pSelectableRowIndex]="rowIndex">
                     <td>
-                        <p-tableCheckbox [value]="admin"></p-tableCheckbox>
+                        <p-tableCheckbox [value]="adminmember" [index]="rowIndex"></p-tableCheckbox>
                     </td>
-                    <td>{{admin.name}}</td>
-                    <td>{{admin.email}}</td>
-                    <td>{{admin.role}}</td>
+                    <td>{{adminmember.id}}</td>
+                    <td>{{adminmember.name}}</td>
+                    <td>{{adminmember.email}}</td>
+                    <td>{{adminmember.role}}</td>
+                    <td>
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (click)="editAdmin(adminmember)"></button> &nbsp;
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (click)="deleteAdmin(adminmember)"></button>
+                    </td>
                 </tr>
             </ng-template>
+
+            <ng-template pTemplate="summary"> <p-button label="Delete Selected" [raised]="true" [rounded]="true"
+                    severity="danger" (click)="deleteSelectedAdmins()"></p-button> </ng-template>
+
         </p-table>
     </div>
+
+    <p-dialog [(visible)]="adminDialog" [style]="{ width: '450px' }" header="Edit" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label for="name">Name</label><br>
+                <input type="text" pInputText id="name" [(ngModel)]="adminmember.name" required autofocus />
+            </div> <br>
+            <div class="field">
+                <label for="email">Email</label><br>
+                <input type="text" pInputText id="email" [(ngModel)]="adminmember.email" required autofocus />
+            </div> <br>
+            <div class="field">
+                <label for="role">Role</label><br>
+                <input type="text" pInputText id="role" [(ngModel)]="adminmember.role" required autofocus />
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                (click)="updateAdmin()"></button>
+        </ng-template>
+    </p-dialog>
 
 </div>

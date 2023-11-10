@@ -8,19 +8,47 @@ import { Admin } from 'src/interface/admin'
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent {
-  
-  admindata: any = (adminData as any).default;
-  adminMembers: Admin[] = [];
-  selectedAdmins!: Admin;
 
-  ngOnInit(): void {
-    // console.log(this.admindata);
+  adminMembers: Admin[] = (adminData as any).default;
+  selectedAdmins!: Admin[];
+  adminmember!: Admin;
+  adminDialog: boolean = false;
 
-    for(let i=0; i< Object.keys(this.admindata).length; i++) {
-      // console.log(this.admindata[i]);
 
-      this.adminMembers.push(this.admindata[i])
-    }
-    // console.log(this.adminMembers);
+  //Opening of dialog box to edit particular admin
+  editAdmin(adminmember: any) {
+    this.adminmember = { ...adminmember };
+    this.adminDialog = true;
   }
+
+  // Delete particular admin
+  deleteAdmin(adminmember: any) {
+    this.adminMembers = this.adminMembers.filter((val) => val.id !== adminmember.id);
+    this.adminmember = {};
+  }
+
+  // Delete all the selected admin
+  deleteSelectedAdmins() {
+    this.adminMembers = this.adminMembers.filter((val) => !this.selectedAdmins?.includes(val));
+    this.selectedAdmins = [];
+  }
+
+  // Editing admin using ID
+  updateAdmin() {
+    this.adminMembers[this.findAdminIndex(this.adminmember.id!)] = this.adminmember;
+    this.adminDialog = false;    
+  }
+  // Finding the index of particular admin to be edited
+  findAdminIndex(id: string) {
+    for(let i=0; i<this.adminMembers.length; i++) {
+      if(this.adminMembers[i].id == id) 
+        return i;
+    }
+    return -1;
+  }
+
+  hideDialog() {
+    this.adminDialog = false;
+  }
+
 }
